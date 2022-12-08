@@ -106,6 +106,42 @@ const rotateElement = (direction) => {
   }
 }
 
+// Относительное перемещение
+
+const clientHeight = document.documentElement.clientHeight;
+// const elementHeight = els.getBoundingClientRect().height;
+// const translateEls = (clientHeight / 2) + (elementHeight / 2);
+
+let positionEl = 0.1;
+const delta = 0.1
+els.setAttribute('style', `--items-progress: ${positionEl}`);
+const translateElements = (direction) => {
+
+  if (direction > 0) {
+    const topPositionEls = el1.getBoundingClientRect().top;
+    if (topPositionEls < clientHeight) {
+      positionEl = positionEl + 0.1;
+      if (positionEl <= 0.95) {
+        els.setAttribute('style', `--items-progress: ${positionEl}`);
+        console.log(positionEl);
+      } else {
+        positionEl = 1;
+        els.setAttribute('style', `--items-progress: ${positionEl}`);
+        console.log(positionEl);
+
+      }
+    }
+  }
+
+  if (direction < 0 ) {
+    positionEl = positionEl - 0.1;
+    els.setAttribute('style', `--items-progress: ${positionEl}`);
+  }
+};
+
+
+
+
 
 
 const wheelMauseHendler = (evt) => {
@@ -125,6 +161,9 @@ const wheelMauseHendler = (evt) => {
     //вращение
     rotateElement(direction)
   }
+
+  // относительное пермещение елементов
+   translateElements(direction);
 };
 
 window.addEventListener('wheel', wheelMauseHendler);
