@@ -57,8 +57,6 @@ const translateElementUpAfter = (direction) => {
   }
 };
 
-
-
 //Вращение
 const rotateAngle = 90;
 const step = 0.05;
@@ -71,6 +69,7 @@ const els = document.querySelector('.els');
 const el1 = els.querySelector('.el_1');
 const el2 = els.querySelector('.el_2');
 const el3 = els.querySelector('.el_3');
+const elsArr = document.querySelectorAll('.el');
 
 
 const rotateElement = (direction) => {
@@ -103,14 +102,20 @@ const rotateElement = (direction) => {
       el1.setAttribute('style', `transform: rotate(${progress_1 * rotateAngle}deg)`);
       progresTotal = progress_1;
     }
+
+    if (progresTotal === 0) {
+      elsArr.forEach((item) => {
+        item.removeAttribute('style');
+      })
+    }
   }
 }
 
 // Относительное перемещение
 
 const clientHeight = document.documentElement.clientHeight;
-// const elementHeight = els.getBoundingClientRect().height;
-// const translateEls = (clientHeight / 2) + (elementHeight / 2);
+const elementHeight = els.getBoundingClientRect().height;
+const translateEls = (clientHeight / 2) + (elementHeight / 2);
 
 let positionEl = 0.1;
 const delta = 0.1
@@ -120,29 +125,27 @@ const translateElements = (direction) => {
   if (direction > 0) {
     const topPositionEls = el1.getBoundingClientRect().top;
     if (topPositionEls < clientHeight) {
-      positionEl = positionEl + 0.1;
+      positionEl = positionEl + delta;
       if (positionEl <= 0.95) {
         els.setAttribute('style', `--items-progress: ${positionEl}`);
-        console.log(positionEl);
       } else {
         positionEl = 1;
         els.setAttribute('style', `--items-progress: ${positionEl}`);
         console.log(positionEl);
-
       }
     }
   }
-
-  if (direction < 0 ) {
-    positionEl = positionEl - 0.1;
-    els.setAttribute('style', `--items-progress: ${positionEl}`);
+  if (direction < 0 && progresTotal === 0 ) {
+    positionEl = positionEl - delta;
+    if (positionEl >= delta) {
+      els.setAttribute('style', `--items-progress: ${positionEl}`);
+    } else {
+        positionEl = delta;
+    }
   }
 };
 
-
-
-
-
+// обработчик события
 
 const wheelMauseHendler = (evt) => {
   const direction = evt.deltaY;
