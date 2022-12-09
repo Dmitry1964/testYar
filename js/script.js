@@ -114,9 +114,6 @@ const rotateElement = (direction) => {
 // Относительное перемещение
 
 const clientHeight = document.documentElement.clientHeight;
-const elementHeight = els.getBoundingClientRect().height;
-const translateEls = (clientHeight / 2) + (elementHeight / 2);
-
 let positionEl = 0.1;
 const delta = 0.1
 els.setAttribute('style', `--items-progress: ${positionEl}`);
