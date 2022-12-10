@@ -13,9 +13,9 @@ const isTransBefore = () => {
 };
 
 const isTransAfter = () => {
- if (progresTotal === 1) {
-  return true;
- }
+  if (progresTotal === 1) {
+    return true;
+  }
 };
 
 const isRotate = () => {
@@ -25,7 +25,7 @@ const isRotate = () => {
 }
 
 const translateElementBefore = (direction) => {
-  if (direction > 0) {
+  if (direction > 0 || direction === 'ArrowUp') {
     if (TRANSLATE < topPositionStop) {
       TRANSLATE = TRANSLATE + STEP
       dataSection.setAttribute('style', `transform: translateY(-${Math.round(TRANSLATE)}px)`);
@@ -35,18 +35,18 @@ const translateElementBefore = (direction) => {
       dataSection.setAttribute('style', `transform: translateY(-${Math.round(TRANSLATE)}px)`);
     }
   }
-  if (direction < 0 && progresTotal === 0) {
+  if ((direction < 0 || direction === 'ArrowDown') && progresTotal === 0) {
     TRANSLATE = TRANSLATE - STEP
     dataSection.setAttribute('style', `transform: translateY(-${Math.round(TRANSLATE)}px)`);
   }
 };
 
 const translateElementUpAfter = (direction) => {
-  if (direction > 0) {
+  if (direction > 0 || direction === 'ArrowUp') {
     TRANSLATE = TRANSLATE + STEP;
     dataSection.setAttribute('style', `transform: translateY(-${Math.round(TRANSLATE)}px)`);
   }
-  if (direction < 0 ) {
+  if (direction < 0 || direction === 'ArrowDown') {
     TRANSLATE = TRANSLATE - STEP;
     dataSection.setAttribute('style', `transform: translateY(-${Math.round(TRANSLATE)}px)`);
 
@@ -75,7 +75,7 @@ const elsArr = document.querySelectorAll('.el');
 const rotateElement = (direction) => {
   const stopElement = document.querySelector('.stop');
 
-  if (direction > 0 && stopElement.getBoundingClientRect().top <= 0) {
+  if ((direction > 0 || direction === 'ArrowUp') && stopElement.getBoundingClientRect().top <= 0) {
     if (progress_1 < 1) {
       progress_1 = +((progress_1 + step).toFixed(2));
       el1.setAttribute('style', `transform: rotate(${progress_1 * rotateAngle}deg)`);
@@ -90,7 +90,7 @@ const rotateElement = (direction) => {
     }
   }
 
-  if (direction < 0) {
+  if (direction < 0 || direction === 'ArrowDown') {
     if (progress_3 > 0) {
       progress_3 = +((progress_3 - step).toFixed(2));
       el3.setAttribute('style', `transform: rotate(${progress_3 * rotateAngle}deg)`);
@@ -119,7 +119,7 @@ const delta = 0.1
 els.setAttribute('style', `--items-progress: ${positionEl}`);
 const translateElements = (direction) => {
 
-  if (direction > 0) {
+  if (direction > 0 || direction === 'ArrowUp') {
     const topPositionEls = el1.getBoundingClientRect().top;
     if (topPositionEls < clientHeight) {
       positionEl = positionEl + delta;
@@ -132,12 +132,12 @@ const translateElements = (direction) => {
       }
     }
   }
-  if (direction < 0 && progresTotal === 0 ) {
+  if ((direction < 0 || direction === 'ArrowDown') && progresTotal === 0) {
     positionEl = positionEl - delta;
     if (positionEl >= delta) {
       els.setAttribute('style', `--items-progress: ${positionEl}`);
     } else {
-        positionEl = delta;
+      positionEl = delta;
     }
   }
 };
@@ -163,10 +163,33 @@ const wheelMauseHendler = (evt) => {
   }
 
   // относительное пермещение елементов
-   translateElements(direction);
+  translateElements(direction);
+};
+
+const keyBoardHendler = (evt) => {
+
+  const key = evt.code;
+  if (isTransBefore()) {
+    // движение по вертикали до вращения
+    translateElementBefore(key);
+  }
+
+  if (isTransAfter()) {
+    // Движение по аертикали после вращения
+    translateElementUpAfter(key);
+  }
+
+  if (isRotate()) {
+    //вращение
+    rotateElement(key)
+  }
+
+  // относительное пермещение елементов
+  translateElements(key);
 };
 
 window.addEventListener('wheel', wheelMauseHendler);
+window.addEventListener('keydown', keyBoardHendler)
 
 
 
